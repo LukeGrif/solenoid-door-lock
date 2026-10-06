@@ -36,7 +36,39 @@ while powered:
 connect 12V to any Teensy pin. The lock must be switched through a
 logic-level MOSFET or a relay module that works with 3.3V.
 
-### Parts
+### Option A: NOYITO isolated MOSFET module (LR7843 + optocoupler)
+
+This is the easiest option. The module has its own optocoupler, gate
+resistor and pull-down, so you don't need the separate resistors listed in
+Option B. The input marked **PWM** is just the control input. The firmware
+sets it fully on for the unlock pulse, so no PWM signal is needed.
+
+```
+Teensy pin 2 ─────────── module PWM   (signal +)
+Teensy GND   ─────────── module GND   (signal −)
+
+12V PSU (+)  ─────────── module DC+   (power in)
+12V PSU (−)  ─────────── module DC−   (power in)
+
+module OUT+  ─────────── Lock RED     (+12V)
+module OUT−  ─────────── Lock BLACK   (GND)
+
+Teensy pin 3 ─────────── Lock YELLOW  (microswitch)
+Teensy GND   ─────────── Lock WHITE   (microswitch)
+```
+
+- Because the module is isolated, the 12V supply's ground and the Teensy's
+  ground don't need to be connected.
+- Add a **1N5819** or **1N4007** diode across OUT+ and OUT−, with the stripe
+  to OUT+. It protects the MOSFET from the motor's voltage spike when power
+  cuts off.
+- Check the module's listing to confirm that its signal input accepts
+  3.3V.
+- The microswitch wires go straight to the Teensy, not through the module.
+
+### Option B: discrete MOSFET
+
+#### Parts
 
 - A 12V DC power supply that can deliver at least 2A
 - A logic-level N-channel MOSFET that fully turns on at 3.3V, such as an
@@ -45,7 +77,7 @@ logic-level MOSFET or a relay module that works with 3.3V.
 - A flyback diode such as a **1N5819** or **1N4007**
 - A 100 Ω resistor for the gate and a 10 kΩ resistor for the gate pull-down
 
-### Connections
+#### Connections
 
 ```
 12V PSU (+) ──────────────┬──────────── Lock RED (+12V)

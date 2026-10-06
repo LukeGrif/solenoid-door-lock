@@ -27,7 +27,7 @@
  */
 
 // ---------------- Configuration ----------------
-const uint8_t LOCK_DRIVE_PIN = 2;   // -> MOSFET gate (through ~100 ohm resistor)
+const uint8_t LOCK_DRIVE_PIN = 2;   // -> MOSFET module PWM/signal input (or gate via ~100 ohm)
 const uint8_t LOCK_SENSE_PIN = 3;   // -> one microswitch wire (other wire -> GND)
 const uint8_t LED_PIN        = 13;  // on-board LED mirrors the drive output
 
