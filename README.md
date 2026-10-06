@@ -152,3 +152,16 @@ and you may need the
 
 The Teensy also sends `STATE LOCKED` / `STATE UNLOCKED` on its own whenever
 the microswitch changes.
+
+## Troubleshooting
+
+**"Connection lost" right after Connect (Linux):** another program is using
+the port. The usual culprits are:
+
+- **The Arduino IDE.** Close its Serial Monitor, or quit the IDE.
+- **ModemManager.** It probes new `/dev/ttyACM*` devices. Installing the
+  [Teensy udev rules](https://www.pjrc.com/teensy/00-teensy.rules) tells it
+  to leave the Teensy alone. As a quick test, you can stop it with
+  `sudo systemctl stop ModemManager`.
+
+The log shows the actual error after "Connection lost:".

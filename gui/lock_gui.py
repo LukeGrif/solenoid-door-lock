@@ -6,6 +6,7 @@ Requires Python 3 with tkinter and pyserial:
     python lock_gui.py
 """
 
+import os
 import queue
 import threading
 import time
@@ -113,7 +114,9 @@ class LockGUI:
             self._log("No serial port selected")
             return
         try:
-            self.ser = serial.Serial(port, 115200, timeout=0.1)
+            # exclusive=True makes the open fail if another program has the port
+            kwargs = {"exclusive": True} if os.name == "posix" else {}
+            self.ser = serial.Serial(port, 115200, timeout=0.1, **kwargs)
         except serial.SerialException as e:
             self._log(f"Could not open {port}: {e}")
             self.ser = None
@@ -146,8 +149,8 @@ class LockGUI:
         while not self.stop_reader.is_set():
             try:
                 data = self.ser.read(64)
-            except (serial.SerialException, OSError, TypeError):
-                self.rx_queue.put(None)  # signal lost connection
+            except (serial.SerialException, OSError, TypeError) as e:
+                self.rx_queue.put(e)  # signal lost connection
                 return
             if not data:
                 continue
@@ -171,8 +174,8 @@ class LockGUI:
         try:
             while True:
                 line = self.rx_queue.get_nowait()
-                if line is None:
-                    self._log("Connection lost")
+                if isinstance(line, Exception):
+                    self._log(f"Connection lost: {line}")
                     self.disconnect()
                     continue
                 self._handle_line(line)
