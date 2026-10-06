@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/cris-logo.png" alt="CRIS - Centre for Robotics &amp; Intelligent Systems" width="400">
+</p>
+
 # Solenoid Door Lock Controller (Teensy 4.1)
 
 Open a 12V motor-driven rotary latch lock from a desktop GUI.
