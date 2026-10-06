@@ -17,13 +17,14 @@ import serial
 import serial.tools.list_ports
 
 TEENSY_VID = 0x16C0  # PJRC vendor ID
+LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "images", "cris-logo.png")
 
 
 class LockGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Door Lock Controller")
-        self.root.minsize(420, 420)
+        self.root.minsize(420, 560)
 
         self.ser = None
         self.reader_thread = None
@@ -38,6 +39,14 @@ class LockGUI:
     # ---------------- UI ----------------
     def _build_ui(self):
         pad = {"padx": 8, "pady": 4}
+
+        # Keep a reference to the image, or Tk will garbage-collect it
+        self.logo = None
+        try:
+            self.logo = tk.PhotoImage(file=LOGO_PATH)
+            tk.Label(self.root, image=self.logo).pack(pady=(8, 0))
+        except tk.TclError:
+            pass  # logo missing or unreadable; run without it
 
         conn = ttk.LabelFrame(self.root, text="Connection")
         conn.pack(fill="x", **pad)
