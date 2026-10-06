@@ -2,6 +2,12 @@
 
 Open a 12V motor-driven rotary latch lock from a desktop GUI.
 
+![The lock opening from the GUI](images/lock-demo.gif)
+
+| Locked | Unlocked |
+|---|---|
+| ![GUI showing LOCKED](images/gui-locked.png) | ![GUI showing UNLOCKED](images/gui-unlocked.png) |
+
 ```
  [ Python GUI ] --USB serial--> [ Teensy 4.1 ] --MOSFET--> [ 12V lock ]
                 <-- lock status ---------------- microswitch <--
