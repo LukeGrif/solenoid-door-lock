@@ -146,10 +146,19 @@ class LockGUI:
 
     def _reader(self):
         buf = b""
+        errors = 0
         while not self.stop_reader.is_set():
             try:
                 data = self.ser.read(64)
+                errors = 0
             except (serial.SerialException, OSError, TypeError) as e:
+                # Linux sometimes reports a spurious "readiness to read but
+                # returned no data" error; only give up if it keeps happening
+                # or the device has really gone away.
+                errors += 1
+                if errors < 20 and self.ser and os.path.exists(self.ser.port):
+                    time.sleep(0.05)
+                    continue
                 self.rx_queue.put(e)  # signal lost connection
                 return
             if not data:
